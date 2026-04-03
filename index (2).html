@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TYPEBOARD (you will love it dw)</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #container {
+      width: 90%;
+      max-width: 1100px;
+    }
+
+    h1 { font-size: 60px; }
+    h2 { font-size: 26px; }
+
+    button {
+      padding: 15px 40px;
+      font-size: 22px;
+      margin-top: 20px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: black;
+    }
+
+    #game, #overlay, #win { display: none; }
+
+    #sentence {
+      font-size: 26px;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+
+    #typed {
+      font-size: 26px;
+      min-height: 50px;
+      margin-bottom: 20px;
+      word-wrap: break-word;
+    }
+
+    #input {
+      opacity: 0;
+      position: absolute;
+    }
+
+    #timer {
+      font-size: 24px;
+    }
+
+    .correct { color: #00ff88; }
+    .wrong { color: #ff4d4d; }
+
+    .party {
+      animation: bgFlash 0.3s infinite;
+    }
+
+    @keyframes bgFlash {
+      0% { background: #ff0055; }
+      25% { background: #00ffcc; }
+      50% { background: #ffff00; }
+      75% { background: #ff6600; }
+      100% { background: #111; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+
+  <!-- START -->
+  <div id="start">
+    <h1>TypeBoard</h1>
+    <h2>Get your hands over the keyboard and focus very fucking well.(its too hard trust me bro)</h2>
+    <button onclick="startGame()">Start</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game">
+    <h2 id="level"></h2>
+    <div id="sentence"></div>
+    <div id="typed"></div>
+    <input id="input" />
+    <div id="timer"></div>
+  </div>
+
+  <!-- LOSE -->
+  <div id="overlay">
+    <h2>YOU WANT TO BE BETTER THAN THAT?! RESTART NOW!!</h2>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+  <!-- LOSE -->
+  <div id="overlay">
+    <h2>WHAT HAPPENED TO YOU?! YOU MUST BE BETTER THAN THAT!! RESTART NOW!!</h2>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+
+  <!-- LOSE -->
+  <div id="overlay">
+    <h2>ARE YOU SERIOUS BRO? BE BETTER THAN BEFORE!! RESTART NOW!!</h2>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+  <!-- WIN -->
+  <div id="win">
+    <h1>🎉 OH FINALLY, YOU SURVIVED WOHOHOOO 🎉</h1>
+    <h2>This challenge has been completed.</h2>
+    <button onclick="restartGame()">restart to play again!!!</button>
+  </div>
+
+</div>
+
+<script>
+let level = 1;
+let time = 10;
+let timer;
+let fullSentence = "";
+
+const baseSentences = [
+  "He walked into the empty room.",
+  "The lights flickered, and nobody noticed.",
+  "A strange sound echoed behind the door.",
+  "She turned slowly, but nothing was there.",
+  "Footsteps followed him, but he was alone.",
+  "The clock ticked loudly, counting something unknown.",
+  "Suddenly, a whisper said his name, quietly, clearly.",
+  "He stopped moving, realizing something was not right.",
+  "The shadows stretched, moving in ways they should not.",
+  "A message appeared, written on the wall, slowly fading.",
+
+  "An incomprehensible phenomenon materialized unexpectedly.",
+  "Hypercommunication destabilizes psychological synchronization instantly.",
+  "Electroencephalographically, the signals became incomprehensibly erratic.",
+  "Uncharacteristically, the environment shifted into disorientation.",
+  "Antidisestablishmentarianism appeared written repeatedly, endlessly.",
+  "Pseudopseudohypoparathyroidism echoed through the distorted silence.",
+  "Floccinaucinihilipilification rendered everything completely meaningless.",
+  "Supercalifragilisticexpialidocious manifested within chaotic repetition.",
+  "Incomprehensibilities multiplied, creating overwhelming discombobulation.",
+  "Everything collapsed into paradoxical, indescribable, chaotic existence."
+];
+
+function focusInput() {
+  const input = document.getElementById("input");
+  input.focus();
+  document.addEventListener("click", () => input.focus());
+}
+
+function startGame() {
+  document.getElementById("start").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("win").style.display = "none";
+  document.body.classList.remove("party");
+
+  level = 1;
+  fullSentence = "";
+
+  focusInput();
+  nextLevel();
+}
+
+function nextLevel() {
+  if (level > 20) {
+    winGame();
+    return;
+  }
+
+  // ✅ FIX: NO STARTING SPACE
+  if (level === 1) {
+    fullSentence = baseSentences[0];
+  } else {
+    fullSentence += " " + baseSentences[level - 1];
+  }
+
+  document.getElementById("sentence").innerText = fullSentence;
+  document.getElementById("level").innerText = "Level " + level;
+
+  document.getElementById("typed").innerHTML = "";
+  document.getElementById("input").value = "";
+
+  focusInput();
+
+  time = level * 10;
+  document.getElementById("timer").innerText = time + "s";
+
+  clearInterval(timer);
+  timer = setInterval(() => {
+    time--;
+    document.getElementById("timer").innerText = time + "s";
+
+    if (time === 0) {
+      clearInterval(timer);
+      showRestart();
+    }
+  }, 1000);
+}
+
+document.getElementById("input").addEventListener("input", function() {
+  if (this.value.length === 1 && this.value[0] === " ") {
+    this.value = "";
+    return;
+  }
+
+  let typed = this.value;
+  let display = "";
+
+  for (let i = 0; i < typed.length; i++) {
+    if (typed[i] === fullSentence[i]) {
+      display += "<span class='correct'>" + typed[i] + "</span>";
+    } else {
+      display += "<span class='wrong'>" + typed[i] + "</span>";
+    }
+  }
+
+  document.getElementById("typed").innerHTML = display;
+
+  if (typed === fullSentence) {
+    clearInterval(timer);
+    level++;
+    nextLevel();
+  }
+});
+
+function showRestart() {
+  document.getElementById("game").style.display = "none";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function winGame() {
+  document.getElementById("game").style.display = "none";
+  document.getElementById("win").style.display = "block";
+  document.body.classList.add("party");
+}
+
+function restartGame() {
+  startGame();
+}
+</script>
+
+</body>
+</html>
