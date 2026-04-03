@@ -82,7 +82,7 @@
   <!-- START -->
   <div id="start">
     <h1>TypeBoard</h1>
-    <h2>Get your hands over the keyboard and focus very fucking well.(its too hard trust me bro)</h2>
+    <h2>Get your hands over the keyboard and focus very well. (it is harder than it looks)</h2>
     <button onclick="startGame()">Start</button>
   </div>
 
@@ -97,28 +97,15 @@
 
   <!-- LOSE -->
   <div id="overlay">
-    <h2>YOU WANT TO BE BETTER THAN THAT?! RESTART NOW!!</h2>
-    <button onclick="restartGame()">Restart</button>
-  </div>
-
-  <!-- LOSE -->
-  <div id="overlay">
-    <h2>WHAT HAPPENED TO YOU?! YOU MUST BE BETTER THAN THAT!! RESTART NOW!!</h2>
-    <button onclick="restartGame()">Restart</button>
-  </div>
-
-
-  <!-- LOSE -->
-  <div id="overlay">
-    <h2>ARE YOU SERIOUS BRO? BE BETTER THAN BEFORE!! RESTART NOW!!</h2>
+    <h2>ARE YOU SERIOUS? YOU CAN DO BETTER. RESTART NOW.</h2>
     <button onclick="restartGame()">Restart</button>
   </div>
 
   <!-- WIN -->
   <div id="win">
-    <h1>🎉 OH FINALLY, YOU SURVIVED WOHOHOOO 🎉</h1>
+    <h1>🎉 YOU SURVIVED 🔥</h1>
     <h2>This challenge has been completed.</h2>
-    <button onclick="restartGame()">restart to play again!!!</button>
+    <button onclick="restartGame()">Play Again</button>
   </div>
 
 </div>
@@ -130,27 +117,21 @@ let timer;
 let fullSentence = "";
 
 const baseSentences = [
-  "He walked into the empty room.",
-  "The lights flickered, and nobody noticed.",
-  "A strange sound echoed behind the door.",
-  "She turned slowly, but nothing was there.",
-  "Footsteps followed him, but he was alone.",
-  "The clock ticked loudly, counting something unknown.",
-  "Suddenly, a whisper said his name, quietly, clearly.",
-  "He stopped moving, realizing something was not right.",
-  "The shadows stretched, moving in ways they should not.",
-  "A message appeared, written on the wall, slowly fading.",
-
-  "An incomprehensible phenomenon materialized unexpectedly.",
-  "Hypercommunication destabilizes psychological synchronization instantly.",
-  "Electroencephalographically, the signals became incomprehensibly erratic.",
-  "Uncharacteristically, the environment shifted into disorientation.",
-  "Antidisestablishmentarianism appeared written repeatedly, endlessly.",
-  "Pseudopseudohypoparathyroidism echoed through the distorted silence.",
-  "Floccinaucinihilipilification rendered everything completely meaningless.",
-  "Supercalifragilisticexpialidocious manifested within chaotic repetition.",
-  "Incomprehensibilities multiplied, creating overwhelming discombobulation.",
-  "Everything collapsed into paradoxical, indescribable, chaotic existence."
+  "He walked into the empty room, slowly, carefully, like something was waiting for him to make a mistake.",
+  "The lights flickered, again and again, never stopping, never giving him a moment to feel safe.",
+  "A strange sound echoed behind the door, getting louder, then quieter, then louder again, confusing him.",
+  "She turned slowly, but nothing was there, just silence, deep silence, the kind that feels wrong.",
+  "Footsteps followed him, step by step, perfectly timed, but every time he turned, nothing appeared.",
+  "The clock ticked loudly, counting something, not time, something else, something he could not understand.",
+  "Suddenly, a whisper said his name, quietly, clearly, then stopped, like it was waiting for him.",
+  "He stopped moving, completely frozen, realizing something was not right, not normal, not safe.",
+  "The shadows stretched across the walls, slowly, unnaturally, like they were alive, like they were watching.",
+  "A message appeared on the wall, letter by letter, slowly fading, forcing him to read faster.",
+  "An incomprehensible phenomenon appeared, unexpectedly, breaking everything he thought was real.",
+  "His thoughts became slower, then faster, then slower again, like his mind was losing control.",
+  "Everything around him shifted, slightly, then more, then completely, turning into something unfamiliar.",
+  "He tried to stay calm, breathe slowly, think clearly, but nothing worked, nothing helped anymore.",
+  "Everything collapsed into silence, deep silence, endless silence, and then, it all restarted."
 ];
 
 function focusInput() {
@@ -174,19 +155,24 @@ function startGame() {
 }
 
 function nextLevel() {
-  if (level > 20) {
+  if (level > 15) {
     winGame();
     return;
   }
 
-  // ✅ FIX: NO STARTING SPACE
   if (level === 1) {
     fullSentence = baseSentences[0];
   } else {
     fullSentence += " " + baseSentences[level - 1];
   }
 
-  document.getElementById("sentence").innerText = fullSentence;
+  // Add dash difficulty after level 10 😈
+  let displaySentence = fullSentence;
+  if (level > 10) {
+    displaySentence = displaySentence.replace(/,/g, " -");
+  }
+
+  document.getElementById("sentence").innerText = displaySentence;
   document.getElementById("level").innerText = "Level " + level;
 
   document.getElementById("typed").innerHTML = "";
@@ -194,7 +180,7 @@ function nextLevel() {
 
   focusInput();
 
-  time = level * 10;
+  time = Math.max(5, level * 7);
   document.getElementById("timer").innerText = time + "s";
 
   clearInterval(timer);
